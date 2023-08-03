@@ -55,6 +55,7 @@ class SAMCLIP(DetectionBaseModel):
         self.tokenize = clip.tokenize
 
     def predict(self, input: str, confidence: int = 0.5) -> sv.Detections:
+        print("predicting image, this is running.")
         image_bgr = cv2.imread(input)
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
