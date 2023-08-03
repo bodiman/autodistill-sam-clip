@@ -124,7 +124,7 @@ class SAMCLIP(DetectionBaseModel):
 
                 similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
 
-                print(similarity)
+                # print(similarity)
 
                 cosime_sims.append(similarity[0][0].item())
 
@@ -158,6 +158,9 @@ class SAMCLIP(DetectionBaseModel):
                 )
 
         final_detections = valid_detections
+
+        print(np.array(nms_data))
+        print(np.array(nms_data).shape)
 
         nms = sv.non_max_suppression(np.array(nms_data), 0.5)
 
