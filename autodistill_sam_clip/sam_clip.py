@@ -12,7 +12,7 @@ import cv2
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 
-torch.use_deterministic_algorithms(False)
+torch.set_deterministic(False)
 
 import numpy as np
 import supervision as sv
