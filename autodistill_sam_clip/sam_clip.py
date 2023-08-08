@@ -165,6 +165,8 @@ class SAMCLIP(DetectionBaseModel):
                         max_idx,
                     )
                 )
+                if verbose:
+                    print(f"Accepted image with confidence {max_prob}")
             elif verbose:
                 print(f"Filtered out image with confidence {max_prob}")
         
