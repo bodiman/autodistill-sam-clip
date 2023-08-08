@@ -170,7 +170,7 @@ class SAMCLIP(DetectionBaseModel):
         print(np.array(nms_data))
         print(np.array(nms_data).shape)
 
-        nms = np.array()
+        nms = np.array([])
         if len(nms_data > 0):
             nms = sv.non_max_suppression(np.array(nms_data), 0.5)
 
