@@ -163,14 +163,16 @@ class SAMCLIP(DetectionBaseModel):
             else:
                 print(f"Filtered out image with confidence {max_prob}")
 
-        print("Finished Processing Predictions.")
+        print(f "Finished Processing Predictions. {len(valid_detections)} valid detections found.")
         final_detections = valid_detections
 
         print("Applying Non-Maximum Supression")
         print(np.array(nms_data))
         print(np.array(nms_data).shape)
 
-        nms = sv.non_max_suppression(np.array(nms_data), 0.5)
+        nms = np.array()
+        if len(nms_data > 0):
+            nms = sv.non_max_suppression(np.array(nms_data), 0.5)
 
         final_detections = []
 
