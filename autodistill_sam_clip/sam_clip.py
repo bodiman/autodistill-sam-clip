@@ -55,11 +55,12 @@ class SAMCLIP(DetectionBaseModel):
         self.tokenize = clip.tokenize
 
     def predict(self, input: str, confidence: int = 0.5) -> sv.Detections:
-        print("predicting image, this is running.")
+        print("Reading Image...")
         image_bgr = cv2.imread(input)
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
         # SAM Predictions
+        print("Generating SAM Prediction...")
         sam_result = self.sam_predictor.generate(image_rgb)
 
         # mask_annotator = sv.MaskAnnotator()
@@ -73,6 +74,7 @@ class SAMCLIP(DetectionBaseModel):
 
         valid_detections = []
 
+        print("Generating Labels...")
         labels = self.ontology.prompts()
 
         nms_data = []
@@ -82,6 +84,7 @@ class SAMCLIP(DetectionBaseModel):
 
         labels.append("background")
 
+        print(f"Processing {len(sam_result)} Predictions...")
         for mask in sam_result:
             mask_item = mask["segmentation"]
 
@@ -113,8 +116,9 @@ class SAMCLIP(DetectionBaseModel):
             image = self.clip_preprocess(image).unsqueeze(0).to(DEVICE)
 
             cosime_sims = []
-
+            
             with torch.no_grad():
+                print("Calculating Similarities...")
                 image_features = self.clip_model.encode_image(image).to(DEVICE)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
 
@@ -137,6 +141,7 @@ class SAMCLIP(DetectionBaseModel):
             max_prob = values[0].item()
             max_idx = indices[0].item()
 
+            print("Filtering...")
             if max_prob > confidence:
                 valid_detections.append(
                     sv.Detections(
@@ -158,8 +163,10 @@ class SAMCLIP(DetectionBaseModel):
                     )
                 )
 
+        print("Finished Processing Predictions.")
         final_detections = valid_detections
 
+        print("Applying Non-Maximum Supression")
         print(np.array(nms_data))
         print(np.array(nms_data).shape)
 
