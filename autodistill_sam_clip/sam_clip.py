@@ -163,7 +163,7 @@ class SAMCLIP(DetectionBaseModel):
             else:
                 print(f"Filtered out image with confidence {max_prob}")
 
-        print(f "Finished Processing Predictions. {len(valid_detections)} valid detections found.")
+        print(f"Finished Processing Predictions. {len(valid_detections)} valid detections found.")
         final_detections = valid_detections
 
         print("Applying Non-Maximum Supression")
