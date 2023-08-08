@@ -54,13 +54,15 @@ class SAMCLIP(DetectionBaseModel):
         self.clip_preprocess = preprocess
         self.tokenize = clip.tokenize
 
-    def predict(self, input: str, confidence: int = 0.5) -> sv.Detections:
-        print("Reading Image...")
+    def predict(self, input: str, confidence: int = 0.5, verbose=False) -> sv.Detections:
+        if verbose:
+            print("Reading Images...")
         image_bgr = cv2.imread(input)
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
         # SAM Predictions
-        print("Generating SAM Prediction...")
+        if verbose:
+            print("Generating SAM Prediction...")
         sam_result = self.sam_predictor.generate(image_rgb)
 
         # mask_annotator = sv.MaskAnnotator()
@@ -74,7 +76,8 @@ class SAMCLIP(DetectionBaseModel):
 
         valid_detections = []
 
-        print("Generating Labels...")
+        if verbose:
+            print("Generating Labels...")
         labels = self.ontology.prompts()
 
         nms_data = []
@@ -84,7 +87,9 @@ class SAMCLIP(DetectionBaseModel):
 
         labels.append("background")
 
-        print(f"Processing {len(sam_result)} Predictions...")
+        if verbose:
+            print(f"Processing {len(sam_result)} Predictions...")
+            
         for mask in sam_result:
             mask_item = mask["segmentation"]
 
@@ -160,15 +165,16 @@ class SAMCLIP(DetectionBaseModel):
                         max_idx,
                     )
                 )
-            else:
+            elif verbose:
                 print(f"Filtered out image with confidence {max_prob}")
-
-        print(f"Finished Processing Predictions. {len(valid_detections)} valid detections found.")
+        
         final_detections = valid_detections
 
-        print("Applying Non-Maximum Supression")
-        print(np.array(nms_data))
-        print(np.array(nms_data).shape)
+        if verbose:
+            print(f"Finished Processing Predictions. {len(valid_detections)} valid detections found.")
+            print("Applying Non-Maximum Supression")
+            print(np.array(nms_data))
+            print(np.array(nms_data).shape)
 
         nms = np.array([])
         if len(nms_data) > 0:
