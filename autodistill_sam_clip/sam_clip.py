@@ -118,7 +118,6 @@ class SAMCLIP(DetectionBaseModel):
             cosime_sims = []
             
             with torch.no_grad():
-                print("Calculating Similarities...")
                 image_features = self.clip_model.encode_image(image).to(DEVICE)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
 
@@ -141,7 +140,6 @@ class SAMCLIP(DetectionBaseModel):
             max_prob = values[0].item()
             max_idx = indices[0].item()
 
-            print("Filtering...")
             if max_prob > confidence:
                 valid_detections.append(
                     sv.Detections(
