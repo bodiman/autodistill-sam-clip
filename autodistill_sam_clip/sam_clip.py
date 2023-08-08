@@ -161,7 +161,7 @@ class SAMCLIP(DetectionBaseModel):
                     )
                 )
             else:
-                print(f"Filtered out image with confidence {max_prob})
+                print(f"Filtered out image with confidence {max_prob}")
 
         print("Finished Processing Predictions.")
         final_detections = valid_detections
