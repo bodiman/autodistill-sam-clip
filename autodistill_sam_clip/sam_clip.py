@@ -54,7 +54,7 @@ class SAMCLIP(DetectionBaseModel):
         self.clip_preprocess = preprocess
         self.tokenize = clip.tokenize
 
-    def predict(self, input: str, confidence: int = 0.5, verbose=False) -> sv.Detections:
+    def predict(self, input: str, confidence: int = 0.5, negative=False, verbose=False) -> sv.Detections:
         if verbose:
             print("Reading Images...")
         image_bgr = cv2.imread(input)
@@ -131,7 +131,10 @@ class SAMCLIP(DetectionBaseModel):
                 text_features /= text_features.norm(dim=-1, keepdim=True)
                 # get cosine similarity between image and text features
 
-                similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+                if negative:
+                    similarity = (100.0 * -image_features @ text_features.T).softmax(dim=-1)
+                else:
+                    similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
 
                 # print(similarity)
 
